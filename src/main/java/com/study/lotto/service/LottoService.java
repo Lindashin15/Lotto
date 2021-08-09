@@ -1,65 +1,38 @@
 package com.study.lotto.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
 
 import com.study.lotto.dto.Lotto;
-import com.study.lotto.dto.WinnigLotto;
+import com.study.lotto.dto.LottoResult;
+import com.study.lotto.dto.LottoSheet;
+import com.study.lotto.dto.WinningLotto;
 
 public class LottoService {
-	
-	private Lotto lotto;
-	private WinnigLotto winLotto;
-	
-	public List<List<Integer>> getLottoList(int amount){
-		lotto = new Lotto(amount);
-		return lotto.createLotto();
-	}
-	
-	// 구매후 로또 종이 받기
 
-	
-	
-	public ArrayList<Integer> getWinningLotto(String winningNumbers, int bonusNum) {
-		winLotto = new WinnigLotto(winningNumbers, bonusNum);
-		return winLotto.createWinLotto();		
-	}
-
-	// 받은 당첨번호 리스트로 정리
-	
-
-
-	public ArrayList<Integer> getWinnigNumbers(List<List<Integer>> lottoList, ArrayList<Integer> winningNoList) {
+	LottoResult lottoResult = new LottoResult();
 		
-		return winLotto.checkWinnigNumbers(lottoList, winningNoList);
-	}
-		
-	// 구매 로또와 당첨번호 체크
-	
-	
-	
-	
-	public int getLottoPrize() {
-		return winLotto.checkWinnigNoAndPrize();
+	public List<Lotto> createLotto(int vaildNo) {
+		return LottoSheet.createLottoSheet(vaildNo);
 	}
 	
+	public List<Integer> createWinningLotto(List<Integer> winningNoList, int bonusNum) {
+		return WinningLotto.createWinnigLotto(winningNoList, bonusNum);
+	}
 	
+	public long matchLottoWithWinningLotto(List<Integer> winnigLotto, List<Lotto> lottoSheet) {
+		lottoResult.resultOfMatchCount(winnigLotto, lottoSheet);
+		return receiveTotPrize();
+	}
+	
+	public long receiveTotPrize() {
+		return lottoResult.calculatePrize();
+	}
+	
+	public Map<Integer, Integer> countWinningLottoResult(){
+		return lottoResult.countWinningLottoResult();
+	}
 
-	//로또 당첨 결과지
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

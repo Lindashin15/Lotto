@@ -1,49 +1,50 @@
 package com.study.lotto;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.study.lotto.dto.Input;
+import com.study.lotto.dto.Lotto;
+import com.study.lotto.dto.Output;
 import com.study.lotto.service.LottoService;
 
 public class LottoProgramMain {
-
+	
 	public static void main(String[] args) {
-		LottoService lottoService = new LottoService();
 		
+		LottoService lottoService = new LottoService();
+		Input input = new Input();
+		Output output = new Output();
+		
+		output.printOfIntroduce();
 		Scanner scanner = new Scanner(System.in);
 		
-		System.out.println("구입금액을 입력해 주세요.");		
-		int amount = scanner.nextInt();
-		
-		List<List<Integer>> lottoList = lottoService.getLottoList(amount);
-		
-		
+		int number = input.checkVaild(scanner.nextInt());
+		output.printResultofCheckVaild(number);
 	
-		System.out.println("지난 주 당첨 번호를 입력해 주세요");
-		String winningNumbers = scanner.next();
+		List<Lotto> lottoSheet = lottoService.createLotto(number);
+		output.printOfLottoSheet(lottoSheet);
 		
-		System.out.println("보너스 볼을 입력해 주세요.");
-		int bonusNum = scanner.nextInt();
+		output.printWinnigNumbers();
+		List<Integer> winningNoList = input.checkInputwinningNumbers(scanner.next());
 		
-		ArrayList<Integer> winningNoList = lottoService.getWinningLotto(winningNumbers, bonusNum);
+		output.printBonusNumber();
+		int bonusNum = input.checkInputBonusNumber(scanner.nextInt());
+		
+		List<Integer> winningLotto = lottoService.createWinningLotto(winningNoList, bonusNum);
+		
+		long totPrize = lottoService.matchLottoWithWinningLotto(winningLotto, lottoSheet);
+		Map<Integer, Integer> countwinningLottoMap = lottoService.countWinningLottoResult();
+		
+		output.printLottoResult();		
+		output.printLotto(countwinningLottoMap);
+		output.printLottoResult(totPrize);
 
-		ArrayList<Integer> winningResult = lottoService.getWinnigNumbers(lottoList, winningNoList);
-		
-		System.out.println("******************************");		
-		System.out.println("당첨 통계");
-		System.out.println("******************************");
-		
-		
-		int totCashPrize = lottoService.getLottoPrize();
-	
-        System.out.println("총 수익률은 "+totCashPrize/amount+"입니다.");
-
-		
-		
 	}
-	
-	
-	
 
 }

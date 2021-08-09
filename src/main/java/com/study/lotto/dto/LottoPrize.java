@@ -1,36 +1,32 @@
 package com.study.lotto.dto;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class LottoPrize {
+public enum LottoPrize {
 	
-	public LottoPrize() {
-		// TODO Auto-generated constructor stub
+	FIRST(6,2000000000),
+	SECOND(5,30000000),
+	THIRD(4,1500000),
+	FOURTH(3,50000);
+		
+	private int matchCount;
+	private long prize;
+	private static Map<Integer, Long> prizeMap = new HashMap<>();
+	
+	static {
+		for (LottoPrize lottoPrize : LottoPrize.values()) {
+			prizeMap.put(lottoPrize.matchCount, lottoPrize.prize);
+		}	
 	}
 	
-	public int calculatePrize(HashMap<Integer, Integer> winnigCountMap) {
-		int  cashPrize = 0;
-        int totCashPrize = 0;
-        for (Integer winnigCountKey : winnigCountMap.keySet()) {
-			switch (winnigCountKey) {
-			case 3:
-				cashPrize = 50000;
-				break;
-			case 4:
-				cashPrize = 1500000;
-				break;
-			case 5:
-				cashPrize = 30000000;
-				break;
-			case 6:
-				cashPrize = 2000000000;
-				break;			
-			}
-			System.out.println(winnigCountKey+"개 일치 ("+cashPrize+") - "+winnigCountMap.get(winnigCountKey)+"개");
-			totCashPrize += cashPrize * winnigCountMap.get(winnigCountKey);
-		}
-        
-        return totCashPrize;
+	private LottoPrize(int matchCount, long prize) {
+		this.matchCount = matchCount;
+		this.prize = prize;
+	}
+		
+	public static long receivePrize(int matchCount) {		
+		return prizeMap.getOrDefault(matchCount, (long)0);		
 	}
 	
 }
