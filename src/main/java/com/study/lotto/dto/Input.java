@@ -1,72 +1,55 @@
 package com.study.lotto.dto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
-import com.study.lotto.exception.InvaildLottoNumberException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Input {
 	
+	@Autowired
+	Validator validator;
+	Scanner scanner;
 	List<Integer> winningNoList;
-	Output output;
+	int bonusNo;
 	
 	public Input() {
-		winningNoList = new ArrayList<>();
-		output = new Output();
+		//validator = new Validator();
+		scanner = new Scanner(System.in);
 	}
 	
-	public int checkVaild(int amount) {
-		int vaildate = amount/1000;
-		if(!(amount%1000==0)) vaildate = 0;		
-		return vaildate;
+	public int inputAmount() {
+		int amount = scanner.nextInt();
+		validator.checkValidAmount(amount);
+		int validNo = amount/1000;
+		return validNo;
 	}
-	
-	public List<Integer> checkInputwinningNumbers(String winningNumbers) {
+		
+	public void inputWinningNoList() {
+		String winningNumbers = scanner.next();
 		String[] winningArray = winningNumbers.split(",");
-		checkWinningNumSize(winningArray);
-		createWinningLottoList(winningArray);
-		checkVaildLottoNo();
-		checkDuplicateWinningNoList();
+		List<Integer> winningNoList = createWinningNoList(winningArray);
+		validator.checkValidWinningNoList(winningNoList);		
+	}
+	
+	public List<Integer> createWinningNoList(String[] winningArray) {
+		winningNoList = new ArrayList<>();
+		for (int i = 0; i < winningArray.length; i++) {
+			winningNoList.add(Integer.parseInt(winningArray[i]));
+		}
 		return winningNoList;
 	}
 	
-	public void checkWinningNumSize(String[] winningArray) {
-		if(!(winningArray.length == 6)) output.printUnvaildationLottoLength();
+	public void inputBonusNo() {
+		bonusNo = scanner.nextInt();
+		validator.checkValidBonusNo(bonusNo, winningNoList);	
 	}
 	
-	public void createWinningLottoList(String[] winningArray) {
-		for (int i = 0; i < winningArray.length; i++) {
-			winningNoList.add(Integer.parseInt(winningArray[i]));
-		}		
-	}
-	
-	public void checkVaildLottoNo() {
-		for (int i = 0; i < winningNoList.size(); i++) {
-			if(!(winningNoList.get(i)>=1 && winningNoList.get(i)<=45)) 
-				output.printUnvaildationNumber();
-		}
-	}
-	
-	public void checkDuplicateWinningNoList() {
-		if(winningNoList.size() != winningNoList.stream().distinct().count()) output.printDuplicationNum();		
-	}
-	
-	public int checkInputBonusNumber(int bonusNum) {
-		if(!(bonusNum>=1 && bonusNum<=45)) output.printUnvaildationNumber();
-		checkDuplicateWithWinningNoList(bonusNum);
-		return bonusNum;
-	}
-	
-	public void checkDuplicateWithWinningNoList(int bonusNum) {
-		for (int i = 0; i < winningNoList.size(); i++) {
-			if(winningNoList.get(i) == bonusNum) output.printDuplicationNum();
-		}
-	}
-	
-	public void InvaildLottoNumberException() {
-		new InvaildLottoNumberException();
-	}
-		
+	public WinningLottoTo givenWinningLotto() {
+		return new WinningLottoTo(winningNoList, bonusNo);
+	}	
+
 }

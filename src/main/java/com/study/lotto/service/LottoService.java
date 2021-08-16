@@ -1,38 +1,35 @@
 package com.study.lotto.service;
 
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.study.lotto.dto.Lotto;
+import com.study.lotto.dto.Converter;
+import com.study.lotto.dto.LottoBehavior;
 import com.study.lotto.dto.LottoResult;
+import com.study.lotto.dto.LottoResultTo;
 import com.study.lotto.dto.LottoSheet;
+import com.study.lotto.dto.LottoSheetTo;
 import com.study.lotto.dto.WinningLotto;
+import com.study.lotto.dto.WinningLottoTo;
 
+@Service
 public class LottoService {
+	
+	@Autowired
+	Converter converter;
+	
+	public LottoSheetTo createLotto(int no, LottoBehavior lottoBehavior) {
+		return converter.convertToLottoSheetTo(new LottoSheet(no, lottoBehavior));
+	}
 
-	LottoResult lottoResult = new LottoResult();
-		
-	public List<Lotto> createLotto(int vaildNo) {
-		return LottoSheet.createLottoSheet(vaildNo);
+	public WinningLottoTo createWinningLotto(List<Integer> winningLotto) {
+		return converter.convertToWinningLottoTo(new WinningLotto(winningLotto));
 	}
 	
-	public List<Integer> createWinningLotto(List<Integer> winningNoList, int bonusNum) {
-		return WinningLotto.createWinnigLotto(winningNoList, bonusNum);
-	}
-	
-	public long matchLottoWithWinningLotto(List<Integer> winnigLotto, List<Lotto> lottoSheet) {
-		lottoResult.resultOfMatchCount(winnigLotto, lottoSheet);
-		return receiveTotPrize();
-	}
-	
-	public long receiveTotPrize() {
-		return lottoResult.calculatePrize();
-	}
-	
-	public Map<Integer, Integer> countWinningLottoResult(){
-		return lottoResult.countWinningLottoResult();
-	}
+	public LottoResultTo createLottoResult(LottoSheetTo lottoSheet, WinningLottoTo winningLotto) {
+		return converter.convertToLottoResultTo(new LottoResult(winningLotto.getWinningLotto(), lottoSheet.getLottoList()));
+	}	
 
 }

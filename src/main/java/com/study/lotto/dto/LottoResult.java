@@ -7,24 +7,33 @@ import java.util.List;
 import java.util.Map;
 
 public class LottoResult {
+	
+	private Map<Integer, Integer> countwinningLottoMap;
+	private long totPrize;
 		
-	private List<Integer> result;
-	
-	public LottoResult() {
-		result = new ArrayList<>();
-	}
-	
-	// 테스트케이스를 위한 set
-	public void setResult(List<Integer> result) {
-		this.result = result;
+	public LottoResult(Map<Integer, Integer> countwinningLottoMap, long totPrize) {
+		this.countwinningLottoMap = countwinningLottoMap;
+		this.totPrize = totPrize;
 	}
 
-	public List<Integer> resultOfMatchCount(List<Integer> winnigLotto, List<Lotto> lottoSheet) { 				
+	public LottoResult(List<Integer> winnigLotto, List<Lotto> lottoSheet) {
+		createLottoResult(winnigLotto, lottoSheet);
+	}
+		
+	public LottoResult createLottoResult(List<Integer> winnigLotto, List<Lotto> lottoSheet) {
+		List<Integer> result = resultOfMatchCount(winnigLotto, lottoSheet);
+		calculatePrize(result);
+		countWinningLottoResult(result);
+		return new LottoResult(countwinningLottoMap,totPrize);
+	}
+	
+	private List<Integer> resultOfMatchCount(List<Integer> winnigLotto, List<Lotto> lottoSheet) { 				
+		List<Integer> result = new ArrayList<>();
 		for (Lotto lotto : lottoSheet) {
 			result.add(matchLottoWithWinnigLotto(winnigLotto, lotto));			
 		}
 		return result;
-	}
+	}	
 	
 	private int matchLottoWithWinnigLotto(List<Integer> winnigLotto, Lotto lotto) {
 		int count = 0;
@@ -38,23 +47,30 @@ public class LottoResult {
 		}
 		return count;
 	}
-			
-	public long calculatePrize() {
-		long totPrize = 0;
+	
+	private long calculatePrize(List<Integer> result) {
 		for (Integer prize : result) {
 			totPrize += LottoPrize.receivePrize(prize);
 		}
 		return totPrize;
 	}
 	
-	public Map<Integer, Integer> countWinningLottoResult() {
-		Map<Integer, Integer> countwinningLottoMap = new HashMap<>();
+	private Map<Integer, Integer> countWinningLottoResult(List<Integer> result) {
+		countwinningLottoMap = new HashMap<>();
 		int count = 0;
 		for (int i = 3; i <= 6 ; i++) {
 			count = Collections.frequency(result, i);
 			countwinningLottoMap.put(i, count);
 		}
 		return countwinningLottoMap;
+	}
+
+	public Map<Integer, Integer> getCountwinningLottoMap() {
+		return countwinningLottoMap;
+	}
+
+	public long getTotPrize() {
+		return totPrize;
 	}
 	
 }

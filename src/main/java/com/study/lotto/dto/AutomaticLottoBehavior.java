@@ -13,9 +13,9 @@ public class AutomaticLottoBehavior implements LottoBehavior{
 	}
 	
 	@Override
-	public List<Integer> createLotto() {
+	public List<Integer> createLotto() {	
 		Collections.shuffle(lottoNumbers);		
-		List<Integer> pickedNumbers = lottoNumbers.subList(0, 6);
+		List<Integer> pickedNumbers = new ArrayList<>(lottoNumbers.subList(0, 6));		
 		Collections.sort(pickedNumbers);
 		return pickedNumbers;
 	}

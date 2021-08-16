@@ -10,19 +10,23 @@ import org.junit.jupiter.api.Test;
 class WinningLottoTest {
 
 	@Test
-	void createWinnigLotto() {
+	void test() {
 		// given
-		List<Integer> winningNoList = new ArrayList<>();
-		winningNoList.add(4);
-		winningNoList.add(35);
-		winningNoList.add(42);
-		winningNoList.add(22);
-		winningNoList.add(14);
-		winningNoList.add(6);
+		List<Integer> winList = new ArrayList<>();
+		winList.add(34);
+		winList.add(2);
+		winList.add(15);
+		winList.add(22);
+		winList.add(6);
+		List<Integer> result = new ArrayList<>();
+		result.add(2);
+		result.add(6);
+		result.add(15);
+		result.add(22);
+		result.add(34);
 		// when
-		List<Integer> winningLotto = WinningLotto.createWinnigLotto(winningNoList, 8);
+		WinningLotto winningLotto = new WinningLotto(winList);
 		// then
-		assertThat(winningLotto.size()).isEqualTo(7);
+		assertThat(winningLotto.getWinningLotto()).containsAll(result);
 	}
-
 }
